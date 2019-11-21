@@ -17,7 +17,20 @@ OWASP Core Rule Set最初由 Ofer Shezaf在2006年发布，目前使用Apache So
   + 95x 类文件, 检测流出流量中的数据泄漏，暂不支持NGINX和NGINX Plus
   + .data 文件, 规则中用到的数据，比如crawlers-user-agents.data文件中包含一个扫描器会用到的User-Agent值的列表，这个文件被规则文件REQUEST-913-SCANNER-DETECTION.conf用来辨别扫描器和机器人
 
-## Anomaly Scoring (异常评分)
+## Anomaly Scoring Detection Mode (异常评分检测模型)
+
+CRS 3.x 默认使用了Anamoly Scoring Detection Mode（异常评分检测模型），区别于旧版本默认使用的Traditional Detection Mode（或者叫IDS/IPS Mode，传统检测模型）。传统检测模型中，所有规则都是自包含的最基本操作模式，规则之间没有智能共享，每个规则也没有之前任何规则匹配的信息，在这种模式下，如果一个规则触发，将执行当前规则上指定的防御性操作和日志操作。
+
+异常评分检测模型实现了协作检测与延迟拦截，通过将检测功能和拦截功能分离更改了规则的逻辑。这些规则并不会直接触发防御性动作，而是增加异常分数。此外，每个规则还将存储匹配的元数据，例如规则ID、攻击类别、匹配的位置和匹配的数据，以便进行日志记录。
+
+使用哪种模型的配置在crs-setup.conf中；
+```
+# Default (Anamoly Mode)
+SecDefaultAction "phase:2,pass,log"
+
+# Updated To Enable Traditional Mode
+SecDefaultAction "phase:2,deny,status:403,log"
+```
 
 CRS使用可配置的异常评分模型来对攻击进行打分，每触发到定义的规则，就会相应增加攻击分数，如果该分数超过配置的异常阈值，该事务会被阻挡。异常级别如下：
 
@@ -27,4 +40,5 @@ CRS使用可配置的异常评分模型来对攻击进行打分，每触发到�
 + Notice, 异常评分2分，表示可能违反协议的攻击，主要由92x类文件定义
 
 默认情况下CRS会阻挡所有评分为5或更高的入站流量，这意味着任何触发Critical规则的入站流量都会被丢弃，触发三个或更多的Notice规则的入站流量也会被丢弃。
+
 
