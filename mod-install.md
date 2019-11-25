@@ -7,7 +7,7 @@ Nginx 1.11.5之后，不再需要完整编译到Nginx二进制文件中，可以
 1. 安装依赖包
 
 ```sh
-$ apt-get install -y apt-utils autoconf automake build-essential \
+# apt-get install -y apt-utils autoconf automake build-essential \
 git libcurl4-openssl-dev libgeoip-dev liblmdb-dev libpcre++-dev \
 libtool libxml2-dev libyajl-dev pkgconf wget zlib1g-dev
 ```
@@ -15,16 +15,16 @@ libtool libxml2-dev libyajl-dev pkgconf wget zlib1g-dev
 2. 下载和编译libmodsecurity
 
 ```sh
-$ git clone --depth 1 -b v3/master --single-branch \
+# git clone --depth 1 -b v3/master --single-branch \
 https://github.com/SpiderLabs/ModSecurity
 
-$ cd ModSecurity
-$ git submodule init
-$ git submodule update
-$ ./build.sh
-$ ./configure
-$ make
-$ make install
+# cd ModSecurity
+# git submodule init
+# git submodule update
+# ./build.sh
+# ./configure
+# make
+# make install
 ```
 
 编译过程如果出现如下报错，可以忽略：
@@ -35,22 +35,22 @@ fatal: No names found, cannot describe anything.
 3. 下载Nginx Connector并作为Nginx的动态模块进行编译
 
 ```sh
-$ git clone --depth 1 https://github.com/SpiderLabs/Modsecurity-nginx.git
+# git clone --depth 1 https://github.com/SpiderLabs/Modsecurity-nginx.git
 
-# 查看nginx版本
-$ nginx -v
+# # 查看nginx版本
+# nginx -v
 nginx version: nginx/1.13.7
 
-# 下载对应版本的nginx源代码
-# 即使编译动态模块, 也需要完整的源代码
-$ wget http://nginx.org/download/nginx-1.13.7.tar.gz
-$ tar zxvf nginx-1.13.7.tar.gz
+# # 下载对应版本的nginx源代码
+# # 即使编译动态模块, 也需要完整的源代码
+# wget http://nginx.org/download/nginx-1.13.7.tar.gz
+# tar zxvf nginx-1.13.7.tar.gz
 
-# 编译动态模块
-$ cd nginx-1.13.7
-$ ./configure --with-compat --add-dynamic-module=../ModSecurity-nginx
-$ make modules
-$ cp objs/ngx_http_modsecurity_module.so /etc/nginx/modules
+# # 编译动态模块
+# cd nginx-1.13.7
+# ./configure --with-compat --add-dynamic-module=../ModSecurity-nginx
+# make modules
+# cp objs/ngx_http_modsecurity_module.so /etc/nginx/modules
 ```
 
 4. 启用Nginx ModSecurity Connector动态模块
@@ -64,13 +64,13 @@ load_module modules/ngx_http_modsecurity_module.so;
 
 准备工作：
 ```sh
-# 创建ModSecurity配置目录
-$ mkdir /etc/nginx/modsec
+# # 创建ModSecurity配置目录
+# mkdir /etc/nginx/modsec
 
-# 下载推荐配置
-$ cd /etc/nginx/modsec
-$ wget https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/modsecurity.conf-recommended
-$ mv modsecurity.conf-recommended modsecurity.conf
+# # 下载推荐配置
+# cd /etc/nginx/modsec
+# wget https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/modsecurity.conf-recommended
+# mv modsecurity.conf-recommended modsecurity.conf
 ```
 
 /etc/nginx/modsec/modsecurity.conf
@@ -104,7 +104,7 @@ server {
 
 验证命令
 ```
-$ curl -D - http://localhost/foo?testparam=thisisatestofmodsecurity
+# curl -D - http://localhost/foo?testparam=thisisatestofmodsecurity
 HTTP/1.1 403 Forbidden
 Server: nginx/1.11.10
 Date: Wed, 3 May 2017 09:00:48 GMT
