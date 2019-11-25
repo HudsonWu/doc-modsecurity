@@ -6,6 +6,14 @@
 
 Nginx的ModSecurity动态模块包括`libmodsecurity`和`Nginx Connector`。
 
+## 快速导航
+
++ [ModSecurity安装指南](mod-install.md)
++ [日志记录配置](log.md)
++ [OWASP核心规则集](/crs/)
++ [k8s中的ingress controller配置](ingress.md)
+
+
 ## 引用
 
 + [ModSecurity 3.0 and NGINX: Quick Start Guide](https://www.nginx.com/resources/library/modsecurity-3-nginx-quick-start-guide)
