@@ -1,6 +1,9 @@
 # ModSecurity 3.0 and Nginx
 
+ModSecurity是一个开源、跨平台的web应用防火墙(WAF)，由Trustwave's SpiderLabs维护。它有一个健壮的基于事件的编程语言，提供了对web应用程序的一系列攻击的保护，并语序HTTP流量监控、日志记录和实时分析。
+
 和之前的版本不同，ModSecurity 3.0原生支持nginx。ModSecurity 3.0将核心功能放入了独立引擎`libmodsecurity`中，和其他组件的交互通过特定组件的连接器，Nginx而言，连接器叫做`Nginx Connector`。
+
 
 ![ModSecurity 3.0 架构](/images/architecture.png)
 
@@ -16,7 +19,7 @@ Nginx的ModSecurity动态模块包括`libmodsecurity`和`Nginx Connector`。
 
 ## 引用
 
-+ [ModSecurity 3.0 and NGINX: Quick Start Guide](https://www.nginx.com/resources/library/modsecurity-3-nginx-quick-start-guide)
-+ [ModSecurity源代码](https://github.com/SpiderLabs/ModSecurity)
-+ [OWASP Core Rule Set源代码](https://github.com/SpiderLabs/owasp-modsecurity-crs)
-+ [OWASP-CRS-Documentation](https://github.com/SpiderLabs/OWASP-CRS-Documentation)
++ [nginx官方提供的阅读材料: 《ModSecurity 3.0 and NGINX: Quick Start Guide》](https://www.nginx.com/resources/library/modsecurity-3-nginx-quick-start-guide)
++ [ModSecurity官方, 查看源代码及文档](https://github.com/SpiderLabs/ModSecurity)
++ [OWASP Core Rule Set, 查看源代码](https://github.com/SpiderLabs/owasp-modsecurity-crs)
++ [OWASP-CRS-Documentation, 文档介绍](https://github.com/SpiderLabs/OWASP-CRS-Documentation)
