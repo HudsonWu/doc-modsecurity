@@ -1,8 +1,8 @@
 # ModSecurity 3.0 and Nginx
 
-ModSecurity是一个开源、跨平台的web应用防火墙(WAF)，由Trustwave's SpiderLabs维护。它有一个健壮的基于事件的编程语言，提供了对web应用程序的一系列攻击的保护，并语序HTTP流量监控、日志记录和实时分析。
+ModSecurity是一个开源、跨平台的web应用防火墙(WAF)，由Trustwave's SpiderLabs维护。它有一个健壮的基于事件的编程语言，提供了对web应用程序一系列攻击的保护，而且还可以进行HTTP流量监控、日志记录和实时分析。
 
-和之前的版本不同，ModSecurity 3.0原生支持nginx。ModSecurity 3.0将核心功能放入了独立引擎`libmodsecurity`中，和其他组件的交互通过特定组件的连接器，Nginx而言，连接器叫做`Nginx Connector`。
+ModSecurity 3.0是一个全新的版本，摆脱了apache的阴影，更加独立开放，支持很多web服务器，包括apache、nginx、iis。ModSecurity 3.0将核心功能放入了独立引擎`libmodsecurity`中，和web服务器等通过特定组件的连接器通信，Nginx而言，连接器叫做`Nginx Connector`。
 
 
 ![ModSecurity 3.0 架构](/images/architecture.png)
