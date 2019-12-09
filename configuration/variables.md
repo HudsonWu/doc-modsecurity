@@ -62,8 +62,93 @@ SecRule TX:ANOMALY_SCORE "@gt 0" "phase:5,id:16,msg:'%{env.ssl_cipher}'"
 
 ## FILES
 
-包含原始文件名的集合。仅用在检查`multipart/form-data`的请求中。从请求body中提取出文件后才可用。
++ FILES, 初始文件名的集合。仅用在检查`multipart/form-data`的请求中，而且从请求body中提取出文件后才可用
++ FILES_COMBINED_SIZE, 请求body中传输文件的总大小，仅用在检查`multipart/form-data`请求中
++ FILES_NAMES, 包含用于文件上传的表单字段列表，仅用在检查`multipart/form-data`请求中
 
 ```
 SecRule FILES "@rx \.conf$" "id:17"
+
+SecRule FILES_COMBINED_SIZE "@gt 100000" "id:18"
+
+SecRule FILES_NAMES "^upfile$" "id:19"
+```
+
+## FULL_REQUEST
+
++ FULL_REQUEST, 包含完整的请求，请求行、请求头、请求body（SecRequestBodyAccess被设置为On时可用）
++ FULL_REQUEST_LENGTH, FULL_REQUEST可用的字节数
+
+```
+SecRule FULL_REQUEST "User-Agent: ModSecurity Regression Tests" "id:21"
+
+SecRule FULL_REQUEST_LENGTH "@eq 205" "id:21"
+```
+
+## GEO
+
+GEO是由最后一个@geoLookup操作产生的结果的集合，该集合可用于匹配从IP地址或主机名查找的地理字段。
+
+字段：
++ COUNTRY_CODE, 两个字符的国家代码，如：US、GB等
++ COUNTRY_CODE3, 最多三个字符的国家代码
++ COUNTRY_NAME, 完整的国家名
++ COUNTRY_CONTINENT, 国家所在洲的两个字符代码，如EU
++ REGION, 两个字符的区域代码，美国而言是州，中国而言是省
++ CITY, 如果database支持的话，代表城市名
++ POSTAL_CODE, 如果database支持的话，代表邮政编码
++ LATITUDE, 如果database支持的话，代表纬度
++ LANGITUDE, 如果database支持的话，代表经度
+
+```
+SecGeoLookupDb /usr/local/geo/data/GeoLiteCity.dat
+...
+SecRule REMOTE_ADDR "@geoLookup" "chain,id:22,drop,msg:'Non-GB IP address'"
+SecRule GEO:COUNTRY_CODE "!@streq GB"
+```
+
+## HIGHEST_SEVERITY
+
+该变量包含匹配到的所有最严重的规则，严重级别使用数字表示，可以用@lt等比较操作符一起使用。严重级别越高，值越低，值为255表示没有设置严重级别。
+
+```
+SecRule HIGHEST_SEVERITY "@le 2" "phase:2,id:23,deny,status:500,msg:'severity %{HIGHEST_SEVERITY}'"
+```
+
+## INBOUND_DATA_ERROR
+
+当请求body超过SecRequestBodyLimit指令设置的大小时，该变量将被设置为1。你的策略应该始终要有一个规则来检查这个变量，可以根据误报率和你的默认策略来决定在触发规则后是拦截还是警告。
+
+```
+SecRule INBOUND_DATA_ERROR "@eq 1" "phase:1,id:24,t:none,log,pass,msg:'Request Body Larger than SecRequestBodyLimit Setting'"
+```
+
+## MATCHED_VAR
+
++ MATCHED_VAR, 此变量保存最近匹配的变量的值，类似于TX:0，但所有操作符都自动支持它，且不需要指定捕获操作
++ MATCHED_VARS, 与MATCHED_VAR类似，只是它是当前操作符检查的所有匹配项的集合
++ MATCHED_VAR_NAME, 这个变量保存匹配到的变量的全名
++ MATCHED_VARS_NAME, 与MATCH_VAR_NAME类似，只是它是当前操作符检查的所有匹配项的集合
+
+```
+SecRule ARGS pattern "chain,deny,id:25"
+  SecRule MATCHED_VAR "further scrutiny"
+
+SecRule ARGS pattern "chain,deny,id:26"
+  SecRule MATCHED_VARS "@eq ARGS:param"
+
+SecRule ARGS pattern "chain,deny,id:27"
+  SecRule MATCHED_VAR_NAME "@eq ARGS:param"
+
+SecRule ARGS pattern "chain,deny,id:28"
+  SecRule MATCHED_VARS_NAME "@eq ARGS:param"
+```
+
+## MODSEC_BUILD
+
+此变量保存ModSecurity构建号，此变量用于在使用仅在特定构建中可用的特性之前检查构建号。
+
+```
+SecRule MODSEC_BUILD "!@ge 02050102" "skipAfter:12345,id:29"
+SecRule ARGS "@pm some key words" "id:12345,deny,status:500"
 ```
