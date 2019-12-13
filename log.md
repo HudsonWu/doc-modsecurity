@@ -33,6 +33,16 @@ ModSecurity有两种类型的日志，一是审计日志（audit log），记录
 ## 调试日志
 
 调试日志默认是关闭的，调试日志也是在modsecurity.conf文件中配置的，有两个配置指令：
-+ SecDebugLog, 日志记录路径，如/var/log/modsec_debug.log
-+ SecDebugLogLevel, 日志记录等级（0-9）， 如9
++ SecDebugLog, 日志记录路径，如`SecDebugLog /var/log/modsec_debug.log`
++ SecDebugLogLevel, 日志记录等级（0-9）， 如`SecDebugLogLevel 4`
 
+日志等级取值含义：
+  + 0, 不记录调试日志
+  + 1, errors，只记录错误（请求被拦截）的调试日志
+  + 2, warnings，警告
+  + 3, notices，通知
+  + 4, 事务处理的细节
+  + 5, 包括每条信息的处理信息
+  + 9, 记录所有日志，包括详细的调试信息
+
+级别在1-3的消息会复制到web服务器的错误日志中。大量的日志记录会对性能产生负面影响，如果非常关心性能，可以设置级别为0。日志记录级别的最佳值是3，不建议在生产环境中使用更高的日志记录级别。
