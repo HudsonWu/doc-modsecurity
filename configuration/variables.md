@@ -152,3 +152,21 @@ SecRule ARGS pattern "chain,deny,id:28"
 SecRule MODSEC_BUILD "!@ge 02050102" "skipAfter:12345,id:29"
 SecRule ARGS "@pm some key words" "id:12345,deny,status:500"
 ```
+
+## TX
+
+这是短暂的事务集合，用来存储数据片段、创建事务异常评分等。置于此集合中的变量仅在事务完成之前可用。
+
+```
+# 增加事务攻击得分
+SecRule ARGS attack "phase:2,id:82,nolog,pass,setvar:TX.score=+5"
+
+# 拦截评分过高的事务
+SecRule TX:SCORE "@gt 20" "phase:2,id:83,log,deny"
+```
+
+TX集合中有一些变量名有特殊含义，不能自定义：
+  + TX:0, 使用@rx或@pm操作符在capture action下匹配到的值
+  + TX:1-TX:9, 使用@rx操作符在capture action下匹配到的子表达式值
+  + TX:MSC_.*, ModSecurity处理标识
+  + MSC_PCRE_LIMITS_EXCEEDED, 如果超过PCRE匹配限制，则设置为非0
