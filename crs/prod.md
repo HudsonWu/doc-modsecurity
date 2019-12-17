@@ -2,15 +2,15 @@
 
 ## 调优以最小化误报
 
-误报(False Positives)是web应用防火墙(WAF)广泛使用最大的威胁，下面的调优基于Dr.Christian Folini的推荐，会减少误报。基本思想是以blocking模式运行ModSecurity，将异常评分设置为比较高的值，等熟练应用后，慢慢地降低这个值。
+误报(False Positives)是web应用防火墙(WAF)面临比较大的一个威胁，下面的调优基于Dr.Christian Folini的推荐，会减少误报。基本思想是以blocking模式运行ModSecurity，先将异常评分设置为比较高的值，然后逐步降低这个值。
+
+### 初始设置
 
 ```
-# 1. 在modsecurity.conf中设置以blocking模式运行
+# 在modsecurity.conf中设置以blocking模式运行
 SecRuleEngine On
 
-# 2. 确保审计日志处于开启状态
-
-# 3. 在crs-setup.conf中将异常评分值设置的大一些
+# 在crs-setup.conf中将异常评分值设置的大一些
 SecAction \
   "id:900110,\
   phase:1,\
@@ -19,18 +19,22 @@ SecAction \
   t:none,\
   setvar:tx.inbound_anomaly_score_threshold=1000,\
   setvar:tx.outbound_anomaly_score_threshold=1000"
-
-# 4. 监控审计日志的误报信息，可以使用下面的指令移除误报的规则
-SecRemoveRuleByID rule-id
-
-# 5. 如果运行一段时间后没有误报，降低一半的异常评分值，然后监控和处理误报，直到异常评分值到达默认值
 ```
+
+### 处理误报
+
+```
+# 监控审计日志的误报信息，可以使用下面的指令移除误报的规则
+SecRuleRemoveByID rule-id
+```
+
+如果运行一段时间后没有误报，降低一半的异常评分值，然后监控和处理误报，直到异常评分值到达默认值
 
 ## 禁止审计日志
 
 审计日志默认启用，不过在生产环境中建议禁止审计日志，一是影响性能，二是磁盘消耗。禁止审计日志需要在modsecurity.conf文件中配置：
 ```
-SecAuditEngine off
+SecAuditEngine Off
 ```
 
 ## 静态内容不启用ModSecurity
@@ -47,7 +51,7 @@ server {
     proxy_set_header Host $host;
   }
 
-  location ~ \.(git|jpg|png|jpeg|svg)$ {
+  location ~ \.(gif|jpg|png|jpeg|svg)$ {
     root /data/images;
   }
 }
