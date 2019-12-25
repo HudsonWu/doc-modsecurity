@@ -91,7 +91,7 @@ Include /etc/nginx/modsec/modsecurity.conf
 SecRule ARGS:testparam "@contains test" "id:1234,deny,log,status:403"
 
 # 移除一条规则
-SecRemoveRuleByID rule-id
+SecRuleRemoveById rule-id
 ```
 
 nginx服务配置文件：/etc/nginx/conf.d/proxy.conf
