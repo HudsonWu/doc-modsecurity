@@ -29,6 +29,10 @@ ModSecurity有两种类型的日志，一是审计日志（audit log），记录
 + SecAuditLogRelevantStatus, 如果SecAuditEngine被设置为RelevantOnly，这个指令控制哪种HTTP响应状态码会被日志记录。
   这个指令的值是基于正则表达式的，如"^(?:5|4(?!04))"表示记录除了404外的4xx和5xx的响应
 + SecAuditLogParts, 控制哪些小节被记录到日志中，例如取值为"ABIJDEFHZ"
++ SecAuditLogType, 记录审计日志的方式
+  + Serial, 日志记录在单个文件中，通过SecAuditLog指定，使用便利但影响性能。
+  + Concurrent, 每个事务被记录在单个文件中，多个事务可以并行记录
+  + HTTPS, 仅在libModSecurity上可用，目前处于测试阶段。
   
 ## 调试日志
 
